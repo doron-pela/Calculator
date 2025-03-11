@@ -11,6 +11,11 @@ input.type = 'text';
 input.id = 'display';
 container.appendChild(input);
 
+const decimal = document.createElement('button');
+decimal.textContent = '.';
+decimal.id = 'decimal';
+container.appendChild(decimal);
+
 for (let i=0; i<10; i++){
     const digit = document.createElement('button');
     digit.textContent = i;
@@ -37,9 +42,6 @@ container.appendChild(equals);
 
 
 function display(target){
-    if(number1||number2){
-        showing = '';
-    }
     if(target.matches('button')){
         showing += target.textContent;
         document.querySelector('#display').value = showing;
@@ -58,36 +60,50 @@ container.addEventListener('click', function(e){
     const target = e.target;
 
     if(target.matches('.digit')){
-        if(!number1){
-            display(target);
-        }
+        display(target);
     }
 
+    if (target.matches('.operator')){
+        if(operation){
+            return;
+        }
+        number1 = parseFloat(showing);
+        operation = target.textContent;
+        if(number1){
+            showing = '';
+        }   
+    }
+
+    if(target.matches('#decimal')){
+        if(!showing.includes('.')){
+            showing += '.';
+        document.querySelector('#display').value = showing;
+        }
+    }
+    
     if (target.matches('#ac')){
         clear();
         return;
     }
 
-    if (target.matches('.operator')){
-        number1 = parseFloat(showing);
-        operation = target.textContent;
-    }
-
-    if(number1){
-        if(target.matches('.digit')){
-            showing += target.textContent;
-            number2 = parseFloat(showing);
-        }
-    }
-
     if(target.matches('#equals')){
+        number2 = parseFloat(showing);
         showing = operate(number1, number2, operation);
+        if(showing=== Infinity){
+            document.querySelector('#display').value = `Cannot divide by 0`;
+            return;
+        }else if(!showing){
+            showing = 'Error';
+            document.querySelector('#display').value = showing;
+            showing = '';
+            return;
+        }else{
+            showing = showing.toFixed(2);
+            document.querySelector('#display').value = showing;
+            number1 = showing;
+        }
         return;
     }
-
-    
-
-
 })
 
 
