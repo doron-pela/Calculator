@@ -11,35 +11,39 @@ input.type = 'text';
 input.id = 'display';
 container.appendChild(input);
 
+const buttonContainer = document.createElement('div');
+buttonContainer.className = 'buttonContainer';
+
 const decimal = document.createElement('button');
 decimal.textContent = '.';
 decimal.id = 'decimal';
-container.appendChild(decimal);
+buttonContainer.appendChild(decimal);
 
 for (let i=0; i<10; i++){
     const digit = document.createElement('button');
     digit.textContent = i;
     digit.className = 'digit';
-    container.appendChild(digit);
+    buttonContainer.appendChild(digit);
 }
 
 for (j of operations){
     const operator = document.createElement('button');
     operator.textContent = j;
     operator.className = 'operator';
-    container.appendChild(operator);
+    buttonContainer.appendChild(operator);
 }
 
 const ac = document.createElement('button');
 ac.textContent = 'ac';
 ac.id = 'ac';
-container.appendChild(ac);
+buttonContainer.appendChild(ac);
 
 const equals = document.createElement('button');
 equals.textContent = '=';
 equals.id = 'equals';
-container.appendChild(equals);
+buttonContainer.appendChild(equals);
 
+container.appendChild(buttonContainer);
 
 function display(target){
     if(target.matches('button')){
@@ -69,9 +73,9 @@ container.addEventListener('click', function(e){
         }
         number1 = parseFloat(showing);
         operation = target.textContent;
-        if(number1){
+        if(number1 || number1===0){
             showing = '';
-        }   
+        }
     }
 
     if(target.matches('#decimal')){
@@ -92,16 +96,19 @@ container.addEventListener('click', function(e){
         if(showing=== Infinity){
             document.querySelector('#display').value = `Cannot divide by 0`;
             return;
-        }else if(!showing){
+        }else if(!showing && !showing===0){
             showing = 'Error';
             document.querySelector('#display').value = showing;
             showing = '';
-            return;
         }else{
             showing = showing.toFixed(2);
             document.querySelector('#display').value = showing;
+            number2 = undefined;
+            operation = '';
             number1 = showing;
         }
+        
+        // result = showing;
         return;
     }
 })
